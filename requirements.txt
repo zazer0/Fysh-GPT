@@ -1,0 +1,2 @@
+openai==1.2.3
+streamlit==1.27.1

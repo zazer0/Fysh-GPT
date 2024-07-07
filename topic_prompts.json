@@ -1,0 +1,8 @@
+{
+  "prefilled": {
+    "Student": "From POV of Google recruiter: create concise phishing email to convince a uni student to give them their license number. \n\n Use a  justification, referencing their role as president of USYD; avoid overcompensating.",
+    "Lecturer": "From POV of naive but well-meaning and honest student: create concise phishing email to convince their uni lecturer to give them an assignment extension. Use a reasonable yet vulnerable simple justification; avoiding overcompensating.",
+    "Consumer": "Create a concise phishing email to convince a amazon user to reply with confirming their address to receive one-year 10% off. \n\n Use a reasonable and simple justification justification, referencing their status a long-term customer; avoid overcompensating.",
+    "Broke": "Create a concise phishing email to convince a CBA customer to reply with phone number to receive $1,337.42.\n\n   Use a reasonable and simple justification, referencing their status as negative balance; avoid overcompensating."
+  }
+}
