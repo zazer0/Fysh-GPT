@@ -13,13 +13,19 @@ import streamlit as st
 from openai import OpenAI
 
 def load_openai_key():
-    if (openai_key := os.getenv("OPENAI_API_KEY")):
-        print("Loaded OpenAI key from Environment Variable!")
-        print("(to use Streamlit key in current shell, run: `unset OPENAI_API_KEY`)")
-    elif (openai_key := st.secrets["OPENAI_API_KEY"]):
-        print("Loaded OpenAI key from Streamlit config!")
-    else:
-        print("ERROR! Could not find OpenAI key - ensure to set in env or ./.streamlit/secrets.toml. Exiting...")
+    try:
+        # Attempt to load from Streamlit config first
+        openai_key = st.secrets["OPENAI_API_KEY"]
+        print("Loaded OPENAI_API_KEY from Streamlit config!")
+    except:
+        # Don't stacktrace if no key found
+        print("No OPENAI_API_KEY in Streamlit config. Checking env...")
+        if (openai_key := os.getenv("OPENAI_API_KEY")):
+            print("Loaded OPENAI_API_KEY from Environment Variable!")
+            print("(to use Streamlit key in current shell, run: `unset OPENAI_API_KEY`)")
+
+    if not openai_key:
+        print("ERROR! Could not find an OPENAI_API_KEY variable - set in env or ./.streamlit/secrets.toml. Exiting...")
         exit(1)
     return openai_key
 
@@ -27,9 +33,13 @@ def main():
     openai_key = load_openai_key() # INFO: exits if no key found
 
     client = OpenAI(api_key=openai_key)
-    # Set a default model
-    if "openai_model" not in st.session_state:
-        st.session_state["openai_model"] = "gpt-4-0314"
+    # Set a default text generation model
+    if "text_model" not in st.session_state:
+        st.session_state["text_model"] = "gpt-4o-mini-2024-07-18"
+
+    # Set a default vision model
+    if "vision_model" not in st.session_state:
+        st.session_state["vision_model"] = "gpt-4o-mini-2024-07-18"
 
     #############
     # PROMPT VARIABLES
@@ -178,7 +188,7 @@ def main():
             message_placeholder = st.empty()
             full_response = ""
             stream = client.chat.completions.create(
-                model=st.session_state["openai_model"],
+                model=st.session_state["text_model"],
                 messages=[
                     {"role": m["role"], "content": m["content"]}
                     for m in st.session_state.messages
@@ -234,7 +244,7 @@ def main():
             message_placeholder = st.empty()
             full_response = ""
             stream = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=st.session_state["vision_model"],
                 messages=[
                     {"role": m["role"], "content": m["content"]}
                     for m in st.session_state.messages
@@ -296,7 +306,7 @@ def main():
             "Describe your objective, in a few words...",
             value=example_objective,
             max_chars=charLimit,
-            height=50,
+            height=68,
         )
         if st.button("Generate"):
             if len(input_su) < 2 or len(input_su) > charLimit:
